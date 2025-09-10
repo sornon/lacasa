@@ -50,7 +50,8 @@ header button{font-size:22px;padding:10px;}
   <button id="back-btn">返回菜单</button>
 </div>
 <script>
-const placeholder = 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="600" height="400" fill="#ddd"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#aaa" font-size="40">图片预留</text></svg>');
+const svgPlaceholder = '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="600" height="400" fill="#ddd"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#aaa" font-size="40">图片预留</text></svg>';
+const placeholder = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgPlaceholder)));
 const menuData = {
  coffee:[
   {id:'ice1',name:'极品冰滴-淡雅芳香系',desc:'百搭雪茄',price:119,unit:'杯',img:''},
