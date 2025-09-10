@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>La Casa Hidden Treasures</title>
+<style>
+body{font-family:Helvetica,Arial,sans-serif;margin:0;padding:0;font-size:22px;background:#f5f5f5;}
+header{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#333;color:#fff;}
+header h1{font-size:28px;margin:0;}
+header button{font-size:22px;padding:10px;}
+.tabs{display:flex;overflow-x:auto;background:#444;}
+.tabs button{flex:1;padding:10px;font-size:22px;background:#444;color:#fff;border:none;}
+.tabs button.active{background:#666;}
+.tab-content{display:none;padding:10px;}
+.tab-content.active{display:block;}
+.carousel{position:relative;overflow:hidden;}
+.slide{display:none;position:relative;}
+.slide img{width:100%;height:auto;display:block;}
+.overlay{position:absolute;bottom:0;left:0;width:100%;background:rgba(0,0,0,0.6);color:#fff;padding:10px;box-sizing:border-box;}
+.overlay h3{margin:0 0 5px 0;font-size:24px;}
+.overlay p{margin:0 0 5px 0;font-size:20px;}
+.overlay button{font-size:20px;padding:5px 10px;}
+.prev,.next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.5);color:#fff;border:none;font-size:24px;padding:10px;}
+.prev{left:0;}
+.next{right:0;}
+#order-page{display:none;padding:20px;}
+#order-page table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+#order-page th,#order-page td{border:1px solid #ccc;padding:10px;font-size:22px;text-align:left;}
+#order-page h2{font-size:28px;text-align:center;}
+#order-page button{font-size:22px;padding:10px 20px;}
+</style>
+</head>
+<body>
+<div id="menu">
+<header>
+  <h1>La Casa 菜单</h1>
+  <button id="viewCart">查看订单 (<span id="cart-count">0</span>)</button>
+</header>
+<nav class="tabs" id="tabs"></nav>
+<div id="contents"></div>
+</div>
+<div id="order-page">
+  <h2>订单详情</h2>
+  <table id="order-table">
+    <thead><tr><th>品名</th><th>数量</th><th>单价</th><th>小计</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <p id="order-total">总价: ¥0</p>
+  <button id="back-btn">返回菜单</button>
+</div>
+<script>
+const placeholder = 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="600" height="400" fill="#ddd"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#aaa" font-size="40">图片预留</text></svg>');
+const menuData = {
+ coffee:[
+  {id:'ice1',name:'极品冰滴-淡雅芳香系',desc:'百搭雪茄',price:119,unit:'杯',img:''},
+  {id:'ice2',name:'极品冰滴-果香红茶系',desc:'提升风味',price:119,unit:'杯',img:''},
+  {id:'ice3',name:'极品冰滴-浆果活泼系',desc:'适配强度',price:119,unit:'杯',img:''},
+  {id:'hot1',name:'精品手冲-万花',desc:'',price:79,unit:'杯',img:''},
+  {id:'hot2',name:'精品手冲-耶加莱德',desc:'',price:79,unit:'杯',img:''},
+  {id:'hot3',name:'精品手冲-桃莓优格',desc:'',price:79,unit:'杯',img:''}
+ ],
+ rum:[
+  {id:'santiago20_cup',name:'圣地亚哥20年(杯)',desc:'绝版',price:439,unit:'杯',img:''},
+  {id:'santiago20_bottle',name:'圣地亚哥20年(瓶)',desc:'绝版',price:6559,unit:'瓶',img:''},
+  {id:'golden',name:'金银岛宝藏(瓶)',desc:'国礼',price:17999,unit:'瓶',img:''},
+  {id:'cubah10_cup',name:'古巴邑10年(杯)',desc:'',price:69,unit:'杯',img:''},
+  {id:'cubah10_bottle',name:'古巴邑10年(瓶)',desc:'',price:980,unit:'瓶',img:''},
+  {id:'cubah20_cup',name:'古巴邑20年(杯)',desc:'',price:238,unit:'杯',img:''},
+  {id:'cubah20_bottle',name:'古巴邑20年(瓶)',desc:'',price:3396,unit:'瓶',img:''}
+ ],
+ wine:[
+  {id:'white1_cup',name:'新西兰十字星长相思干白 2021(杯)',desc:'白葡萄酒',price:69,unit:'杯',img:''},
+  {id:'white1_bottle',name:'新西兰十字星长相思干白 2021(瓶)',desc:'白葡萄酒',price:328,unit:'瓶',img:''},
+  {id:'white2_cup',name:'法拉利酒庄小夏布利村庄干白 2023(杯)',desc:'白葡萄酒',price:69,unit:'杯',img:''},
+  {id:'white2_bottle',name:'法拉利酒庄小夏布利村庄干白 2023(瓶)',desc:'白葡萄酒',price:328,unit:'瓶',img:''},
+  {id:'white3_cup',name:'法国杜索传统佳酿香槟NV(杯)',desc:'白葡萄酒',price:69,unit:'杯',img:''},
+  {id:'white3_bottle',name:'法国杜索传统佳酿香槟NV(瓶)',desc:'白葡萄酒',price:328,unit:'瓶',img:''},
+  {id:'red1_cup',name:'摩尔多瓦梅洛干红葡萄酒2012(杯)',desc:'红葡萄酒',price:69,unit:'杯',img:''},
+  {id:'red1_bottle',name:'摩尔多瓦梅洛干红葡萄酒2012(瓶)',desc:'红葡萄酒',price:328,unit:'瓶',img:''},
+  {id:'red2_cup',name:'意大利法芭雅酒庄蒙特布查诺红葡萄酒2022(杯)',desc:'红葡萄酒',price:69,unit:'杯',img:''},
+  {id:'red2_bottle',name:'意大利法芭雅酒庄蒙特布查诺红葡萄酒2022(瓶)',desc:'红葡萄酒',price:328,unit:'瓶',img:''},
+  {id:'red3_cup',name:'意大利曼都利亚利嘉红葡萄酒2021(杯)',desc:'红葡萄酒',price:69,unit:'杯',img:''},
+  {id:'red3_bottle',name:'意大利曼都利亚利嘉红葡萄酒2021(瓶)',desc:'红葡萄酒',price:328,unit:'瓶',img:''},
+  {id:'red4_cup',name:'意大利格兰吉雅经典阿玛罗尼红葡萄酒2022(杯)',desc:'红葡萄酒',price:69,unit:'杯',img:''},
+  {id:'red4_bottle',name:'意大利格兰吉雅经典阿玛罗尼红葡萄酒2022(瓶)',desc:'红葡萄酒',price:328,unit:'瓶',img:''},
+  {id:'rose1_cup',name:'意大利特莎蒂洛蓝布鲁斯科桃红起泡酒NV(杯)',desc:'桃红葡萄酒',price:69,unit:'杯',img:''},
+  {id:'rose1_bottle',name:'意大利特莎蒂洛蓝布鲁斯科桃红起泡酒NV(瓶)',desc:'桃红葡萄酒',price:328,unit:'瓶',img:''},
+  {id:'rose2_cup',name:'意大利时尚控桃红起泡酒NV(杯)',desc:'桃红葡萄酒',price:69,unit:'杯',img:''},
+  {id:'rose2_bottle',name:'意大利时尚控桃红起泡酒NV(瓶)',desc:'桃红葡萄酒',price:328,unit:'瓶',img:''}
+ ],
+ spirit:[
+  {id:'radamir_cup',name:'拉达米尔白兰地(杯)',desc:'',price:69,unit:'杯',img:''},
+  {id:'radamir_bottle',name:'拉达米尔白兰地(瓶)',desc:'',price:689,unit:'瓶',img:''},
+  {id:'meskheti_cup',name:'梅斯赫蒂五年白兰地(杯)',desc:'',price:69,unit:'杯',img:''},
+  {id:'meskheti_bottle',name:'梅斯赫蒂五年白兰地(瓶)',desc:'',price:689,unit:'瓶',img:''},
+  {id:'marendo_cup',name:'麦伦多单一微醺麦芽(杯)',desc:'',price:118,unit:'杯',img:''},
+  {id:'marendo_bottle',name:'麦伦多单一微醺麦芽(瓶)',desc:'',price:1180,unit:'瓶',img:''}
+ ],
+ cocktail:[
+  {id:'mojito',name:'比那尔德里奥的莫吉托',desc:'',price:98,unit:'杯',img:''},
+  {id:'cubalibre',name:'自由古巴之烟草时光',desc:'',price:98,unit:'杯',img:''},
+  {id:'castle',name:'夜之古堡',desc:'',price:98,unit:'杯',img:''}
+ ],
+ special:[
+  {id:'luck1',name:'好运杯冰桶',desc:'含白桦树汁',price:59,unit:'桶',img:''},
+  {id:'luck2',name:'招财杯冰桶',desc:'含白桦树汁',price:59,unit:'桶',img:''},
+  {id:'luck3',name:'吉祥杯冰桶',desc:'含白桦树汁',price:59,unit:'桶',img:''},
+  {id:'luck4',name:'平安杯冰桶',desc:'含白桦树汁',price:59,unit:'桶',img:''},
+  {id:'nuts',name:'坚果拼盘',desc:'随机拼盘',price:88,unit:'盘',img:''},
+  {id:'ham',name:'伊比利亚火腿',desc:'',price:198,unit:'盘',img:''},
+  {id:'truffle',name:'黑松露饼干',desc:'',price:49,unit:'盘',img:''}
+ ]
+};
+const categories=[
+ {key:'coffee',label:'精品咖啡'},
+ {key:'rum',label:'古巴朗姆'},
+ {key:'wine',label:'葡萄酒甄选'},
+ {key:'spirit',label:'小众烈酒'},
+ {key:'cocktail',label:'特调鸡尾酒'},
+ {key:'special',label:'La Casa 小彩蛋'}
+];
+const cart=[];
+function initMenu(){
+ const tabContainer=document.getElementById('tabs');
+ const contentContainer=document.getElementById('contents');
+ categories.forEach((cat,index)=>{
+  const btn=document.createElement('button');
+  btn.textContent=cat.label;
+  btn.className='tab'+(index===0?' active':'');
+  btn.dataset.tab=cat.key;
+  btn.onclick=()=>showTab(cat.key,btn);
+  tabContainer.appendChild(btn);
+  const section=document.createElement('section');
+  section.id=cat.key;
+  section.className='tab-content'+(index===0?' active':'');
+  const carousel=document.createElement('div');
+  carousel.className='carousel';
+  menuData[cat.key].forEach(item=>{
+    const slide=document.createElement('div');
+    slide.className='slide';
+    const img=document.createElement('img');
+    img.src=placeholder;
+    img.alt=item.name;
+    const overlay=document.createElement('div');
+    overlay.className='overlay';
+    overlay.innerHTML=`<h3>${item.name} ¥${item.price}/${item.unit}</h3><p>${item.desc}</p><button onclick="addToCart('${item.id}')">加入购物车</button>`;
+    slide.appendChild(img);
+    slide.appendChild(overlay);
+    carousel.appendChild(slide);
+  });
+  const prev=document.createElement('button');
+  prev.className='prev';
+  prev.textContent='‹';
+  const next=document.createElement('button');
+  next.className='next';
+  next.textContent='›';
+  carousel.appendChild(prev);
+  carousel.appendChild(next);
+  section.appendChild(carousel);
+  contentContainer.appendChild(section);
+  initCarousel(carousel);
+ });
+}
+function showTab(key,btn){
+ document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+ btn.classList.add('active');
+ document.querySelectorAll('.tab-content').forEach(sec=>sec.classList.remove('active'));
+ document.getElementById(key).classList.add('active');
+}
+function initCarousel(carousel){
+ const slides=carousel.querySelectorAll('.slide');
+ let idx=0;
+ const showSlide=i=>{slides.forEach((s,j)=>s.style.display=j===i?'block':'none');};
+ const prev=carousel.querySelector('.prev');
+ const next=carousel.querySelector('.next');
+ prev.onclick=()=>{idx=(idx-1+slides.length)%slides.length;showSlide(idx);};
+ next.onclick=()=>{idx=(idx+1)%slides.length;showSlide(idx);};
+ showSlide(0);
+}
+function addToCart(id){
+ const allItems=Object.values(menuData).flat();
+ const item=allItems.find(i=>i.id===id);
+ const existing=cart.find(c=>c.id===id);
+ if(existing){existing.qty+=1;}else{cart.push({...item,qty:1});}
+ document.getElementById('cart-count').textContent=cart.reduce((sum,i)=>sum+i.qty,0);
+ alert('已加入购物车');
+}
+function renderOrder(){
+ const tbody=document.querySelector('#order-table tbody');
+ tbody.innerHTML='';
+ let total=0;
+ cart.forEach(item=>{
+  const tr=document.createElement('tr');
+  const subtotal=item.price*item.qty; total+=subtotal;
+  tr.innerHTML=`<td>${item.name}</td><td>${item.qty}</td><td>¥${item.price}</td><td>¥${subtotal}</td>`;
+  tbody.appendChild(tr);
+ });
+ document.getElementById('order-total').textContent='总价: ¥'+total;
+}
+document.getElementById('viewCart').onclick=()=>{
+ renderOrder();
+ document.getElementById('menu').style.display='none';
+ document.getElementById('order-page').style.display='block';
+};
+document.getElementById('back-btn').onclick=()=>{
+ document.getElementById('order-page').style.display='none';
+ document.getElementById('menu').style.display='block';
+};
+initMenu();
+</script>
+</body>
+</html>
