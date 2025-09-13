@@ -309,6 +309,8 @@ function updateArrows(){
   const atStart = track.scrollLeft <= 1;
   const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
   prevBtn.disabled = atStart; nextBtn.disabled = atEnd;
+  prevBtn.style.display = atStart ? 'none' : 'grid';
+  nextBtn.style.display = atEnd ? 'none' : 'grid';
 }
 track.addEventListener('scroll', updateArrows);
 window.addEventListener('resize', updateArrows);
