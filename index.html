@@ -335,8 +335,10 @@ function updateArrows(){
   const atStart = track.scrollLeft <= 1;
   const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
   prevBtn.disabled = atStart; nextBtn.disabled = atEnd;
-  prevBtn.style.display = atStart ? 'none' : 'grid';
-  nextBtn.style.display = atEnd ? 'none' : 'grid';
+  prevBtn.style.visibility = atStart ? 'hidden' : 'visible';
+  prevBtn.style.pointerEvents = atStart ? 'none' : 'auto';
+  nextBtn.style.visibility = atEnd ? 'hidden' : 'visible';
+  nextBtn.style.pointerEvents = atEnd ? 'none' : 'auto';
 }
 track.addEventListener('scroll', updateArrows);
 window.addEventListener('resize', updateArrows);
