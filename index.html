@@ -10,6 +10,7 @@
 <meta name="theme-color" content="#111">
 <title>La Casa 电子菜单</title>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
 <style>
   :root{
     --bg:#0f0f12; --panel:#14141a; --ink:#f1f1f3; --muted:#b6b8c0;
@@ -450,6 +451,13 @@ function drawRingText(ctx, text, radius, startAngle, spacingPx){
   }
   ctx.restore();
 }
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js');
+    });
+  }
 </script>
 </body>
 </html>
