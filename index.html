@@ -336,7 +336,8 @@ function drawCarousel(reset=false){
   track.innerHTML='';
   MENU.filter(m=>m.cat===activeCat).forEach(m=> track.appendChild(slideCard(m)));
   if(reset){ track.scrollTo({left:0, top:0, behavior:'auto'}); }
-  updateArrows();
+  // Defer arrow update to ensure new slides have rendered
+  requestAnimationFrame(updateArrows);
 }
 drawCarousel(true);
 
