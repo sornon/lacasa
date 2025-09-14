@@ -371,10 +371,14 @@ function updateArrows(){
   nextBtn.style.pointerEvents = atEnd ? 'none' : 'auto';
 }
 let arrowRaf;
+let arrowTimeout;
 track.addEventListener('scroll', () => {
   cancelAnimationFrame(arrowRaf);
   arrowRaf = requestAnimationFrame(updateArrows);
+  clearTimeout(arrowTimeout);
+  arrowTimeout = setTimeout(updateArrows, 100);
 });
+track.addEventListener('scrollend', updateArrows);
 window.addEventListener('resize', updateArrows);
 
 prevBtn.addEventListener('click', ()=>{
