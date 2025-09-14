@@ -336,8 +336,10 @@ function drawCarousel(reset=false){
   track.innerHTML='';
   MENU.filter(m=>m.cat===activeCat).forEach(m=> track.appendChild(slideCard(m)));
   if(reset){ track.scrollTo({left:0, top:0, behavior:'auto'}); }
-  // Defer arrow update to ensure new slides have rendered
-  requestAnimationFrame(updateArrows);
+  // Defer arrow update to ensure new slides have rendered.
+  // Safari may delay layout/scroll updates, so use double rAF
+  // to reliably read dimensions and scroll positions.
+  requestAnimationFrame(()=> requestAnimationFrame(updateArrows));
 }
 drawCarousel(true);
 
@@ -350,7 +352,11 @@ function updateArrows(){
   nextBtn.style.visibility = atEnd ? 'hidden' : 'visible';
   nextBtn.style.pointerEvents = atEnd ? 'none' : 'auto';
 }
-track.addEventListener('scroll', updateArrows);
+let arrowRaf;
+track.addEventListener('scroll', () => {
+  cancelAnimationFrame(arrowRaf);
+  arrowRaf = requestAnimationFrame(updateArrows);
+});
 window.addEventListener('resize', updateArrows);
 
 prevBtn.addEventListener('click', ()=>{
