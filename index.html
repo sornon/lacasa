@@ -27,8 +27,8 @@
        -webkit-touch-callout:none;
        -webkit-tap-highlight-color:transparent;
        touch-action:manipulation;}
-  body.standalone header{ padding-top: calc(env(safe-area-inset-top) + 6px); }
-  header{position:sticky;top:0;z-index:100;background:linear-gradient(180deg, rgba(15,15,18,.98), rgba(15,15,18,.88) 70%, rgba(15,15,18,0));backdrop-filter:blur(10px);border-bottom:1px solid var(--border); padding-top: max(0px, env(safe-area-inset-top));}
+  body.standalone header{ padding-top: calc(constant(safe-area-inset-top) + 6px); padding-top: calc(env(safe-area-inset-top) + 6px); }
+  header{position:sticky;top:0;z-index:100;background:linear-gradient(180deg, rgba(15,15,18,.98), rgba(15,15,18,.88) 70%, rgba(15,15,18,0));-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--border); padding-top: max(0px, constant(safe-area-inset-top)); padding-top: max(0px, env(safe-area-inset-top));}
   .wrap{max-width:1200px;margin:0 auto;padding:12px 16px}
   h1{font-size:var(--fs-h1);margin:2px 0 6px}
   .sub{color:var(--muted);font-size:var(--fs-sub);margin:0 0 10px}
@@ -75,11 +75,11 @@
   .arrow[disabled]{opacity:.35}
   /* Cart Drawer + Backdrop */
   .cart-fab{position:fixed;right:22px;bottom:24px;z-index:1;border-radius:999px;padding:20px 26px;font-size:22px;background:var(--accent-2);color:#fff;border:none;box-shadow:0 10px 20px rgba(0,0,0,.35)}
-  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(1px);opacity:0;pointer-events:none;transition:.25s;z-index:10000}
+  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);-webkit-backdrop-filter:blur(1px);backdrop-filter:blur(1px);opacity:0;pointer-events:none;transition:.25s;z-index:10000}
   .backdrop.show{opacity:1;pointer-events:auto}
   .drawer{position:fixed;right:0;top:0;height:100%;width:min(560px,94vw);z-index:10001;transform:translateX(100%);transition:.35s ease;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;box-shadow:-20px 0 40px rgba(0,0,0,.45)}
   .drawer.open{transform:translateX(0)}
-  .drawer header{background:#111117;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1;padding-top:max(0px, env(safe-area-inset-top))}
+  .drawer header{background:#111117;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1;padding-top:max(0px, constant(safe-area-inset-top)); padding-top:max(0px, env(safe-area-inset-top))}
   .drawer .items{flex:1;overflow:auto;padding:16px}
   .item{display:grid;grid-template-columns:80px 1fr auto;gap:14px;padding:14px 10px;border-bottom:1px dashed rgba(255,255,255,.1)}
   .thumb{width:80px;height:80px;border-radius:12px;background:#222;display:flex;align-items:center;justify-content:center;font-size:14px;color:#777}
@@ -99,7 +99,7 @@
   /* Orders Page */
   .page{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:10010}
   .page.show{display:flex}
-  .page header{background:#111117;border-bottom:1px solid var(--border);padding-top:max(0px, env(safe-area-inset-top))}
+  .page header{background:#111117;border-bottom:1px solid var(--border);padding-top:max(0px, constant(safe-area-inset-top)); padding-top:max(0px, env(safe-area-inset-top))}
   .order-list{flex:1;overflow:auto;padding:16px 20px}
   .order-card{background:#17171d;border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
   .order-card h3{margin:0 0 8px;font-size:22px}
@@ -291,6 +291,23 @@ CATS.forEach(cat=>{
 
 const track = document.getElementById('track');
 const prevBtn=document.getElementById('prev'); const nextBtn=document.getElementById('next');
+const canSmoothScroll = CSS && CSS.supports && CSS.supports('scroll-behavior','smooth');
+function smoothScrollTo(el, left){
+  if(canSmoothScroll){
+    el.scrollTo({left, behavior:'smooth'});
+  }else{
+    const start = el.scrollLeft;
+    const change = left - start;
+    const duration = 300;
+    const startTime = performance.now();
+    function step(now){
+      const progress = Math.min((now - startTime)/duration,1);
+      el.scrollLeft = start + change*progress;
+      if(progress<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+}
 
 function slideCard(m){
   const slide = el('div',{class:'slide'});
@@ -363,7 +380,7 @@ prevBtn.addEventListener('click', ()=>{
   if(prevBtn.disabled) return;
   const step = Math.round(track.clientWidth*0.9);
   const target = Math.max(0, track.scrollLeft - step);
-  track.scrollTo({left: target, behavior:'smooth'});
+  smoothScrollTo(track, target);
 });
 
 nextBtn.addEventListener('click', ()=>{
@@ -371,7 +388,7 @@ nextBtn.addEventListener('click', ()=>{
   const step = Math.round(track.clientWidth*0.9);
   const maxLeft = track.scrollWidth - track.clientWidth;
   const target = Math.min(maxLeft, track.scrollLeft + step);
-  track.scrollTo({left: target, behavior:'smooth'});
+  smoothScrollTo(track, target);
 });
 
 // Cart + Orders
@@ -392,14 +409,15 @@ function cartSum(){ return CART.reduce((a,b)=>a+b.qty*b.price,0); }
 function syncBtn(){ cartBtn.textContent = '购物车 · ' + cartCount(); }
 
 function addToCart(m, chosen){
-  const key = m.id + '|' + (chosen?.label || m.variants[0].label);
-  const unit = (chosen?.unit || m.variants[0].unit);
-  const price = (chosen?.price || m.variants[0].price);
+  const label = (chosen && chosen.label) ? chosen.label : m.variants[0].label;
+  const unit = (chosen && chosen.unit) ? chosen.unit : m.variants[0].unit;
+  const price = (chosen && chosen.price) ? chosen.price : m.variants[0].price;
+  const key = m.id + '|' + label;
   const ex = CART.find(x=>x._key===key);
   if(ex){
     ex.qty += 1;
   }else{
-    CART.push({_key:key, id:m.id, title:m.title, img:m.img, spec:(chosen?.label||m.variants[0].label), unit:'', price:price, qty:1});
+    CART.push({_key:key, id:m.id, title:m.title, img:m.img, spec:label, unit:'', price:price, qty:1});
   }
   persistCart(); renderCart(); openDrawer();
   cartItems.scrollTop = cartItems.scrollHeight;
