@@ -353,16 +353,17 @@ function drawCarousel(reset=false){
   track.innerHTML='';
   MENU.filter(m=>m.cat===activeCat).forEach(m=> track.appendChild(slideCard(m)));
   if(reset){ track.scrollTo({left:0, top:0, behavior:'auto'}); }
-  // Defer arrow update to ensure new slides have rendered.
-  // Safari may delay layout/scroll updates, so use double rAF
-  // to reliably read dimensions and scroll positions.
+  // Immediately update arrows then defer another update so Safari
+  // has a chance to finalize layout/scroll metrics.
+  updateArrows();
   requestAnimationFrame(()=> requestAnimationFrame(updateArrows));
 }
 drawCarousel(true);
 
 function updateArrows(){
+  const maxLeft = Math.max(0, track.scrollWidth - track.clientWidth);
   const atStart = track.scrollLeft <= 1;
-  const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+  const atEnd = track.scrollLeft >= maxLeft - 1;
   prevBtn.disabled = atStart; nextBtn.disabled = atEnd;
   prevBtn.style.visibility = atStart ? 'hidden' : 'visible';
   prevBtn.style.pointerEvents = atStart ? 'none' : 'auto';
