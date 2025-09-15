@@ -55,6 +55,9 @@
   }
   .imgph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#80838f;font-size:18px;background:repeating-linear-gradient(45deg,#202028,#202028 12px,#1a1a21 12px,#1a1a21 24px)}
   .soft-list{list-style:none;margin:0;padding:16px;font-size:var(--fs-name);line-height:1.8}
+  .soft-item{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .soft-item .actions{display:flex;align-items:center;gap:12px;}
+  .soft-item .price{color:var(--accent);font-weight:900;font-size:var(--fs-price);}
   .slide>img,
   .thumb img{
     width:100%;
@@ -262,7 +265,10 @@ const MENU=[
   {id:'bucket-4',cat:'easter',title:'好彩头冰桶｜平安杯',desc:'同款彩光冰桶。',variants:[{label:'桶',unit:'/桶',price:5900}],img:'images/ice-1.jpg'}
 ];
 
-const SOFT_DRINKS=['可乐 30元','苏打水 30元'];
+const SOFT_DRINKS=[
+  {id:'soft-coke',title:'可乐',variants:[{label:'瓶',unit:'/瓶',price:3000}]},
+  {id:'soft-soda',title:'苏打水',variants:[{label:'瓶',unit:'/瓶',price:3000}]}
+];
 
 const fmtY = n => '¥' + (n/100).toLocaleString('zh-CN',{minimumFractionDigits:0});
 function el(tag, attrs={}, ...children){
@@ -356,7 +362,16 @@ function slideCard(m){
 function softListSlide(){
   return el('div',{class:'slide'},
     el('ul',{class:'soft-list'},
-      ...SOFT_DRINKS.map(t=> el('li',{}, t))
+      ...SOFT_DRINKS.map(m=>{
+        const v = m.variants[0];
+        return el('li',{class:'soft-item'},
+          el('span',{}, m.title),
+          el('div',{class:'actions'},
+            el('span',{class:'price'}, fmtY(v.price)),
+            el('button',{class:'btn small primary', onclick:()=>addToCart(m, v)}, '加入购物车')
+          )
+        );
+      })
     )
   );
 }
