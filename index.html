@@ -54,6 +54,7 @@
     main{padding-bottom: 0px;}
   }
   .imgph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#80838f;font-size:18px;background:repeating-linear-gradient(45deg,#202028,#202028 12px,#1a1a21 12px,#1a1a21 24px)}
+  .soft-list{list-style:none;margin:0;padding:16px;font-size:var(--fs-name);line-height:1.8}
   .slide>img,
   .thumb img{
     width:100%;
@@ -209,6 +210,7 @@ document.addEventListener('touchmove', e=>{
 const CATS=[
   {id:'coffee',name:'精品咖啡 Coffee'},{id:'rum',name:'古巴朗姆 Rum for Cigar'},
   {id:'sig',name:'La Casa 特调 Signature Cocktails'},
+  {id:'soft',name:'软饮 Soft Drinks'},
   {id:'rose',name:'桃红葡萄酒 Rosé'},{id:'rare',name:'小众烈酒 Rare Spirits'},
   {id:'white',name:'白葡萄酒 White Wine'},{id:'red',name:'红葡萄酒 Red Wine'},
   {id:'snack',name:'茄客小食'},
@@ -259,6 +261,8 @@ const MENU=[
   {id:'bucket-3',cat:'easter',title:'好彩头冰桶｜吉祥杯',desc:'同款彩光冰桶。',variants:[{label:'桶',unit:'/桶',price:5900}],img:'images/ice-1.jpg'},
   {id:'bucket-4',cat:'easter',title:'好彩头冰桶｜平安杯',desc:'同款彩光冰桶。',variants:[{label:'桶',unit:'/桶',price:5900}],img:'images/ice-1.jpg'}
 ];
+
+const SOFT_DRINKS=['可乐 30元','苏打水 30元'];
 
 const fmtY = n => '¥' + (n/100).toLocaleString('zh-CN',{minimumFractionDigits:0});
 function el(tag, attrs={}, ...children){
@@ -349,9 +353,21 @@ function slideCard(m){
   return slide;
 }
 
+function softListSlide(){
+  return el('div',{class:'slide'},
+    el('ul',{class:'soft-list'},
+      ...SOFT_DRINKS.map(t=> el('li',{}, t))
+    )
+  );
+}
+
 function drawCarousel(reset=false){
   track.innerHTML='';
-  MENU.filter(m=>m.cat===activeCat).forEach(m=> track.appendChild(slideCard(m)));
+  if(activeCat==='soft'){
+    track.appendChild(softListSlide());
+  }else{
+    MENU.filter(m=>m.cat===activeCat).forEach(m=> track.appendChild(slideCard(m)));
+  }
   if(reset){ track.scrollTo({left:0, top:0, behavior:'auto'}); }
   // Immediately update arrows then defer another update so Safari
   // has a chance to finalize layout/scroll metrics.
