@@ -1,0 +1,44 @@
+<svg width="640" height="960" viewBox="0 0 640 960" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">寻道者立绘</title>
+  <desc id="desc">披风飘动的玄幻角色剪影，带有灵气流动效果。</desc>
+  <defs>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="20" result="blur" />
+      <feOffset dy="18" in="blur" result="offset" />
+      <feMerge>
+        <feMergeNode in="offset" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <linearGradient id="robe" x1="34%" y1="0%" x2="66%" y2="100%">
+      <stop offset="0%" stop-color="#8af6ff" stop-opacity="0.96" />
+      <stop offset="45%" stop-color="#5c8cff" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#362076" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient id="cloak" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#86b6ff" stop-opacity="0.8" />
+      <stop offset="40%" stop-color="#4f49d9" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#1a0d54" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient id="hair" x1="0%" y1="0%" x2="100%" y2="80%">
+      <stop offset="0%" stop-color="#f2fbff" />
+      <stop offset="60%" stop-color="#97b7ff" />
+      <stop offset="100%" stop-color="#3e2b7a" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#6ff6ff" stop-opacity="0.7" />
+      <stop offset="60%" stop-color="#4d79ff" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#321962" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <g filter="url(#shadow)">
+    <ellipse cx="320" cy="876" rx="180" ry="46" fill="#060915" opacity="0.6" />
+  </g>
+  <circle cx="320" cy="360" r="260" fill="url(#glow)" opacity="0.6" />
+  <path d="M292 164c28-46 78-58 114-16 32 38 10 94-18 140-18 30-44 52-72 64-24-20-48-60-52-94-4-40 12-78 28-94z" fill="url(#hair)" />
+  <path d="M202 308c34-40 104-54 156-42 64 14 118 64 140 120 36 94 2 216-44 326-20 48-46 94-96 126-40 24-98 16-142-6-52-26-84-70-94-132-16-96-6-204 34-290 16-36 28-74 46-102z" fill="url(#cloak)" />
+  <path d="M256 348c52-26 118-18 168 26 60 54 72 152 44 244-24 78-72 150-122 188-46 34-102 22-144-12-48-40-80-116-70-196 10-90 46-190 124-250z" fill="url(#robe)" />
+  <path d="M318 184c26-8 50 10 60 44 6 20 8 42 4 60-14 8-24 10-36 8s-24-8-34-20c-12-18-16-48-10-66 4-14 10-22 16-26z" fill="#fafcff" opacity="0.8" />
+  <path d="M212 640c30 26 64 42 94 38 40-6 78-44 104-92 28-50 44-112 30-150-8-18-36-34-54-34-26 0-52 20-70 40-38 44-56 102-72 144-8 22-18 40-32 54z" fill="#c3e5ff" opacity="0.35" />
+  <path d="M440 536c10 24 18 48 18 70 0 46-16 90-42 130-10 14-36 34-68 42-28 6-52 0-74-12 20-20 38-44 52-74 26-50 42-108 58-156 10-28 18-52 24-74 22 18 32 40 32 74z" fill="#72b3ff" opacity="0.42" />
+</svg>

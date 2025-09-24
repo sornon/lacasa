@@ -1,0 +1,62 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">寻道大千灵境背景</title>
+  <desc id="desc">以蓝紫色灵光渲染的玄幻群山与灵雾。</desc>
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f1734" />
+      <stop offset="35%" stop-color="#191f48" />
+      <stop offset="68%" stop-color="#2e1e57" />
+      <stop offset="100%" stop-color="#111422" />
+    </linearGradient>
+    <linearGradient id="sunset" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#5ce7ff" stop-opacity="0.9" />
+      <stop offset="60%" stop-color="#7c5af2" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#ff9ace" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="mist" cx="50%" cy="20%" r="70%">
+      <stop offset="0%" stop-color="#c7f7ff" stop-opacity="0.48" />
+      <stop offset="35%" stop-color="#6f87ff" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#18152b" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="ridge1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2c4f9f" stop-opacity="0.15" />
+      <stop offset="60%" stop-color="#493c8c" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#281551" stop-opacity="0.7" />
+    </linearGradient>
+    <linearGradient id="ridge2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1f3d7a" stop-opacity="0.28" />
+      <stop offset="70%" stop-color="#412b7c" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#220f3f" stop-opacity="0.78" />
+    </linearGradient>
+    <linearGradient id="ridge3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#192864" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#1c0f30" stop-opacity="0.82" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="40" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bgGradient)" />
+  <ellipse cx="1460" cy="240" rx="420" ry="220" fill="url(#sunset)" filter="url(#glow)" opacity="0.86" />
+  <rect width="1920" height="1080" fill="url(#mist)" />
+  <g opacity="0.9">
+    <path d="M0 708C160 646 278 598 410 612C602 631 720 744 926 712C1132 680 1218 524 1432 544C1574 557 1666 646 1920 624V1080H0V708Z" fill="url(#ridge1)" />
+    <path d="M0 822C224 774 356 704 536 720C756 740 882 886 1094 864C1306 842 1424 666 1640 684C1768 694 1856 774 1920 766V1080H0V822Z" fill="url(#ridge2)" opacity="0.85" />
+    <path d="M0 944C192 898 384 856 604 876C824 896 952 1036 1176 1016C1400 996 1528 848 1748 862C1844 868 1888 910 1920 924V1080H0V944Z" fill="url(#ridge3)" opacity="0.8" />
+  </g>
+  <g opacity="0.45" fill="#c3f3ff">
+    <circle cx="220" cy="180" r="3" />
+    <circle cx="340" cy="260" r="2" />
+    <circle cx="520" cy="120" r="2.5" />
+    <circle cx="860" cy="200" r="2.5" />
+    <circle cx="980" cy="140" r="2" />
+    <circle cx="1240" cy="180" r="3" />
+    <circle cx="1520" cy="120" r="2.2" />
+    <circle cx="1660" cy="200" r="2.6" />
+    <circle cx="1800" cy="160" r="2.4" />
+  </g>
+</svg>

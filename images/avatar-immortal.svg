@@ -1,0 +1,19 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">仙者头像</title>
+  <desc id="desc">散发灵光的修仙者头像圆图标。</desc>
+  <defs>
+    <radialGradient id="ring" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#a4f6ff" stop-opacity="1" />
+      <stop offset="45%" stop-color="#6eb7ff" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#24307c" stop-opacity="0.7" />
+    </radialGradient>
+    <linearGradient id="robe" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#f1fbff" />
+      <stop offset="100%" stop-color="#6d8cfb" />
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="60" fill="url(#ring)" />
+  <path d="M64 30c14 0 26 12 26 28 0 10-6 20-12 24-6 4-16 8-18 8s-12-4-18-8c-6-4-12-14-12-24 0-16 12-28 26-28h8z" fill="#fbfeff" opacity="0.9" />
+  <path d="M42 86c6-4 18-8 22-8s16 4 22 8c8 6 12 14 12 24H30c0-10 4-18 12-24z" fill="url(#robe)" />
+  <path d="M52 52c4-8 12-12 20-12 10 0 18 8 18 18 0 8-4 14-8 18-4 4-12 8-18 8s-14-4-18-8c-4-4-8-10-8-18 0-4 2-10 4-14 2 4 6 8 10 8z" fill="#dcecff" opacity="0.9" />
+</svg>
