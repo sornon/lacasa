@@ -211,11 +211,15 @@ document.addEventListener('touchmove', e=>{
 
 // 分类与菜单（支持多规格）
 const CATS=[
-  {id:'coffee',name:'精品咖啡 Coffee'},{id:'rum',name:'古巴朗姆 Rum for Cigar'},
-  {id:'sig',name:'La Casa 特调 Signature Cocktails'},
+  {id:'coffee',name:'精品咖啡 Coffee'},
+  {id:'rum',name:'古巴朗姆 Rum for Cigar'},
   {id:'soft',name:'软饮 Soft Drinks'},
-  {id:'rose',name:'桃红葡萄酒 Rosé'},{id:'rare',name:'小众烈酒 Rare Spirits'},
-  {id:'white',name:'白葡萄酒 White Wine'},{id:'red',name:'红葡萄酒 Red Wine'},
+  {id:'rose',name:'桃红葡萄酒 Rosé'},
+  {id:'rare',name:'威士忌 Whisky'},
+  {id:'rare',name:'小众烈酒 Rare Spirits'},
+  {id:'white',name:'白葡萄酒 White Wine'},
+  {id:'red',name:'红葡萄酒 Red Wine'},
+  {id:'sig',name:'La Casa 特调 Signature Cocktails'},
   {id:'snack',name:'茄客小食'},
   {id:'easter',name:'La Casa 小彩蛋'}
 ];
@@ -236,6 +240,7 @@ const MENU=[
   {id:'ww-1',cat:'white',title:'南十字星 马尔堡 长相思 干白 2021',desc:'单宁近零，激发味蕾，适合灰茄前/中。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:32800}],img:'images/ww-1.jpg'},
   {id:'ww-2',cat:'white',title:'勃艮第 法拉利酒庄 小夏布利 村庄 干白 2023',desc:'矿物感清晰，酸度爽脆。',variants:[{label:'瓶',unit:'/瓶',price:68800}],img:'images/ww-2.jpg'},
   {id:'ww-3',cat:'white',title:'法国 杜索 传统佳酿 香槟',desc:'气泡细腻，活力十足。',variants:[{label:'瓶',unit:'/瓶',price:98900}],img:'images/ww-3.jpg'},
+  {id:'ww-4',cat:'white',title:'泰雷斯庄园 马儿伯勒 长相思 干白',desc:'风味复杂，百香果突出。',variants:[{label:'瓶',unit:'/瓶',price:68800}],img:'images/ww-4.jpg'},
   // 红葡萄酒
   {id:'rw-1',cat:'red',title:'摩尔多瓦 梅洛 干红 2012',desc:'适合灰茄后饮用。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:32800}],img:'images/rw-1.jpg'},
   {id:'rw-2',cat:'red',title:'法芭雅 蒙特布查诺 红 2022',desc:'成熟红果与香料气息。',variants:[{label:'瓶',unit:'/瓶',price:32800}],img:'images/rw-2.jpg'},
@@ -244,6 +249,12 @@ const MENU=[
   // 桃红
   {id:'rose-1',cat:'rose',title:'特莎蒂洛 蓝布鲁斯科 桃红起泡 NV',desc:'全程兼容雪茄，轻松畅饮。',variants:[{label:'瓶',unit:'/瓶',price:32800}],img:'images/rose-1.jpg'},
   {id:'rose-2',cat:'rose',title:'时尚控 桃红起泡',desc:'派对气质，愉悦开胃。',variants:[{label:'瓶',unit:'/瓶',price:32800}],img:'images/rose-2.jpg'},
+  // 威士忌
+  {id:'ws-1',cat:'ws',title:'阿贝 5年',desc:'不如古巴朗姆配雪茄，你想要我也没办法',variants:[{label:'瓶',unit:'/瓶',price:98000}],img:'images/ws-1.jpg'},
+  {id:'ws-2',cat:'ws',title:'百富 双桶 12年',desc:'不如古巴朗姆配雪茄，你想要我也没办法',variants:[{label:'瓶',unit:'/瓶',price:98000}],img:'images/ws-2.jpg'},
+  {id:'ws-3',cat:'ws',title:'麦卡伦 雪莉桶 12年',desc:'不如古巴朗姆配雪茄，你想要我也没办法',variants:[{label:'瓶',unit:'/瓶',price:138000}],img:'images/ws-3.jpg'},
+  {id:'ws-4',cat:'ws',title:'大摩 15年',desc:'不如古巴朗姆配雪茄，你想要我也没办法',variants:[{label:'瓶',unit:'/瓶',price:138000}],img:'images/ws-4.jpg'},
+  {id:'ws-5',cat:'ws',title:'山崎 12年',desc:'不如古巴朗姆配雪茄，你想要我也没办法',variants:[{label:'瓶',unit:'/瓶',price:238000}],img:'images/ws-5.jpg'},
   // 小众烈酒
   {id:'rare-1',cat:'rare',title:'狂爱芒果甜性烈酒',desc:'水果炸弹，甜度很高。',variants:[{label:'瓶',unit:'/瓶',price:32800}],img:'images/rare-1.jpg'},
   {id:'rare-2',cat:'rare',title:'狂爱椰子甜性烈酒',desc:'水果炸弹，甜度很高。',variants:[{label:'瓶',unit:'/瓶',price:32800}],img:'images/rare-2.jpg'},
