@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lacasa-cache-v1';
+const CACHE_NAME = 'lacasa-cache-v2';
 const ASSETS = [
   '/',
   '/index.html',
@@ -17,6 +17,7 @@ const ASSETS = [
   '/images/rare-6.jpg',
   '/images/rose-1.jpg',
   '/images/rose-2.jpg',
+  '/images/sig-1.jpg',
   '/images/rw-1.jpg',
   '/images/rw-2.jpg',
   '/images/rw-3.jpg',
@@ -28,7 +29,13 @@ const ASSETS = [
   '/images/treasure.jpg',
   '/images/ww-1.jpg',
   '/images/ww-2.jpg',
-  '/images/ww-3.jpg'
+  '/images/ww-3.jpg',
+  '/images/ww-4.jpg',
+  '/images/ws-1.jpg',
+  '/images/ws-2.jpg',
+  '/images/ws-3.jpg',
+  '/images/ws-4.jpg',
+  '/images/ws-5.jpg'
 ];
 
 self.addEventListener('install', (event) => {
@@ -45,7 +52,77 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then(resp => resp || fetch(event.request))
-  );
+  const { request } = event;
+
+  if (request.method !== 'GET') {
+    return;
+  }
+
+  const url = new URL(request.url);
+
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  if (request.destination === 'image') {
+    event.respondWith(cacheFirst(request));
+    return;
+  }
+
+  if (request.mode === 'navigate') {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  event.respondWith(staleWhileRevalidate(request));
 });
+
+async function cacheFirst(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(request, { ignoreSearch: true });
+  if (cached) {
+    return cached;
+  }
+  try {
+    const response = await fetch(request);
+    if (response && response.ok) {
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (err) {
+    return new Response('Offline', { status: 503, statusText: 'Offline' });
+  }
+}
+
+async function networkFirst(request) {
+  const cache = await caches.open(CACHE_NAME);
+  try {
+    const response = await fetch(request);
+    if (response && response.ok) {
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (err) {
+    const cached = await cache.match(request, { ignoreSearch: true });
+    if (cached) {
+      return cached;
+    }
+    throw err;
+  }
+}
+
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cachedPromise = cache.match(request, { ignoreSearch: true });
+  const fetchPromise = fetch(request)
+    .then((response) => {
+      if (response && response.ok) {
+        cache.put(request, response.clone());
+      }
+      return response;
+    })
+    .catch(() => undefined);
+
+  const cached = await cachedPromise;
+  return cached || fetchPromise || new Response('Offline', { status: 503, statusText: 'Offline' });
+}
