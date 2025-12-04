@@ -50,14 +50,30 @@ if(!window.requestAnimationFrame){
   window.requestAnimationFrame = function(cb){ return setTimeout(cb,16); };
 }
 var CATS = [
-  {id:'coffee',name:'精品咖啡 Coffee'}, {id:'rum',name:'古巴朗姆 Rum for Cigar'},
-  {id:'sig',name:'La Casa 特调 Signature Cocktails'},
-  {id:'soft',name:'软饮 Soft Drinks'},
-  {id:'rose',name:'桃红葡萄酒 Rosé'}, {id:'rare',name:'小众烈酒 Rare Spirits'},
-  {id:'white',name:'白葡萄酒 White Wine'}, {id:'red',name:'红葡萄酒 Red Wine'},
+  {id:'coffee',name:'精品咖啡'}, {id:'rum',name:'古巴朗姆'},
+  {id:'sig',name:'特调'},
+  {id:'soft',name:'软饮'},
+  {id:'rose',name:'桃红葡萄酒'}, {id:'rare',name:'小众烈酒'},
+  {id:'white',name:'白葡萄酒'}, {id:'red',name:'红葡萄酒'},
   {id:'snack',name:'茄客小食'},
-  {id:'easter',name:'La Casa 小彩蛋'}
+  {id:'easter',name:'小彩蛋'}
 ];
+
+// 动态排序
+var currentHour = new Date().getHours();
+var isNight = currentHour >= 18 || currentHour < 6;
+var ORDER_DAY = ['coffee','soft','snack','white','rose','easter','sig','rum','ws','red','rare'];
+var ORDER_NIGHT = ['sig','rum','ws','rare','red','white','rose','snack','easter','soft','coffee'];
+var targetOrder = isNight ? ORDER_NIGHT : ORDER_DAY;
+
+CATS.sort(function(a,b){
+  var ia = targetOrder.indexOf(a.id);
+  var ib = targetOrder.indexOf(b.id);
+  var va = ia === -1 ? 999 : ia;
+  var vb = ib === -1 ? 999 : ib;
+  return va - vb;
+});
+
 var MENU = [
   {id:'ice-1',cat:'coffee',title:'极品冰滴｜淡雅芳香系（百搭雪茄）',desc:'0℃冰水滴滤 1 天，发酵 3–7 天，口感清冽冰爽。',variants:[{label:'杯',unit:'/杯',price:11900}],img:'images/ice-1.jpg'},
   {id:'ice-2',cat:'coffee',title:'极品冰滴｜果香红茶系（提升风味）',desc:'果香跳跃、红茶感明显，激发雪茄香气。',variants:[{label:'杯',unit:'/杯',price:11900}],img:'images/ice-1.jpg'},

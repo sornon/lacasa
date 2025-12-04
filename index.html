@@ -211,18 +211,36 @@ document.addEventListener('touchmove', e=>{
 
 // 分类与菜单（支持多规格）
 const CATS=[
-  {id:'coffee',name:'精品咖啡 Coffee'},
-  {id:'rum',name:'古巴朗姆 Rum for Cigar'},
-  {id:'soft',name:'软饮 Soft Drinks'},
-  {id:'white',name:'白葡萄酒 White Wine'},
-  {id:'rose',name:'桃红起泡酒 Rosé'},
-  {id:'ws',name:'威士忌 Whisky'},
-  {id:'rare',name:'小众烈酒 Rare Spirits'},
-  {id:'red',name:'红葡萄酒 Red Wine'},
-  {id:'sig',name:'La Casa 特调 Signature Cocktails'},
+  {id:'coffee',name:'精品咖啡'},
+  {id:'rum',name:'古巴朗姆'},
+  {id:'soft',name:'软饮'},
+  {id:'white',name:'白葡萄酒'},
+  {id:'rose',name:'桃红起泡酒'},
+  {id:'ws',name:'威士忌'},
+  {id:'rare',name:'小众烈酒'},
+  {id:'red',name:'红葡萄酒'},
+  {id:'sig',name:'特调'},
   {id:'snack',name:'茄客小食'},
-  {id:'easter',name:'La Casa 小彩蛋'}
+  {id:'easter',name:'小彩蛋'}
 ];
+
+// 动态排序：白天/夜间模式
+// 白天: 6:00 - 18:00 (优先咖啡、软饮、小食、白葡等)
+// 夜间: 18:00 - 6:00 (优先特调、朗姆、威士忌、烈酒等)
+const currentHour = new Date().getHours();
+const isNight = currentHour >= 18 || currentHour < 6;
+const ORDER_DAY = ['coffee','soft','snack','white','rose','easter','sig','rum','ws','red','rare'];
+const ORDER_NIGHT = ['sig','rum','ws','rare','red','white','rose','snack','easter','soft','coffee'];
+const targetOrder = isNight ? ORDER_NIGHT : ORDER_DAY;
+
+CATS.sort((a,b) => {
+  const ia = targetOrder.indexOf(a.id);
+  const ib = targetOrder.indexOf(b.id);
+  const va = ia === -1 ? 999 : ia;
+  const vb = ib === -1 ? 999 : ib;
+  return va - vb;
+});
+
 const MENU=[
   // 咖啡（单规格：杯）
   {id:'ice-1',cat:'coffee',title:'极品冰滴｜淡雅芳香系（百搭雪茄）',desc:'0℃冰水滴滤 1 天，发酵 3–7 天，口感清冽冰爽。',variants:[{label:'杯', unit:'/杯', price:11900}],img:'images/ice-1.jpg'},
