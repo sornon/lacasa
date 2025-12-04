@@ -60,19 +60,40 @@ var CATS = [
 ];
 
 // 动态排序
-var currentHour = new Date().getHours();
-var isNight = currentHour >= 18 || currentHour < 6;
 var ORDER_DAY = ['coffee','soft','snack','white','rose','easter','sig','rum','ws','red','rare'];
 var ORDER_NIGHT = ['sig','rum','ws','rare','red','white','rose','snack','easter','soft','coffee'];
-var targetOrder = isNight ? ORDER_NIGHT : ORDER_DAY;
 
-CATS.sort(function(a,b){
-  var ia = targetOrder.indexOf(a.id);
-  var ib = targetOrder.indexOf(b.id);
-  var va = ia === -1 ? 999 : ia;
-  var vb = ib === -1 ? 999 : ib;
-  return va - vb;
-});
+function updateCatsOrder(){
+  var currentHour = new Date().getHours();
+  var isNight = currentHour >= 18 || currentHour < 6;
+  var targetOrder = isNight ? ORDER_NIGHT : ORDER_DAY;
+
+  // 检查当前排序是否已经匹配目标排序
+  var currentOrderIds = CATS.map(function(c){return c.id}).join(',');
+  var tempCats = CATS.slice(0).sort(function(a,b){
+    var ia = targetOrder.indexOf(a.id);
+    var ib = targetOrder.indexOf(b.id);
+    var va = ia === -1 ? 999 : ia;
+    var vb = ib === -1 ? 999 : ib;
+    return va - vb;
+  });
+  var newOrderIds = tempCats.map(function(c){return c.id}).join(',');
+
+  if(currentOrderIds === newOrderIds) return;
+
+  CATS.sort(function(a,b){
+    var ia = targetOrder.indexOf(a.id);
+    var ib = targetOrder.indexOf(b.id);
+    var va = ia === -1 ? 999 : ia;
+    var vb = ib === -1 ? 999 : ib;
+    return va - vb;
+  });
+  // 刷新 Tabs 显示
+  if(typeof renderTabs === 'function') renderTabs();
+}
+updateCatsOrder();
+setInterval(updateCatsOrder, 60000);
+
 
 var MENU = [
   {id:'ice-1',cat:'coffee',title:'极品冰滴｜淡雅芳香系（百搭雪茄）',desc:'0℃冰水滴滤 1 天，发酵 3–7 天，口感清冽冰爽。',variants:[{label:'杯',unit:'/杯',price:11900}],img:'images/ice-1.jpg'},

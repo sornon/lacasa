@@ -227,19 +227,60 @@ const CATS=[
 // 动态排序：白天/夜间模式
 // 白天: 6:00 - 18:00 (优先咖啡、软饮、小食、白葡等)
 // 夜间: 18:00 - 6:00 (优先特调、朗姆、威士忌、烈酒等)
-const currentHour = new Date().getHours();
-const isNight = currentHour >= 18 || currentHour < 6;
 const ORDER_DAY = ['coffee','soft','snack','white','rose','easter','sig','rum','ws','red','rare'];
 const ORDER_NIGHT = ['sig','rum','ws','rare','red','white','rose','snack','easter','soft','coffee'];
-const targetOrder = isNight ? ORDER_NIGHT : ORDER_DAY;
 
-CATS.sort((a,b) => {
-  const ia = targetOrder.indexOf(a.id);
-  const ib = targetOrder.indexOf(b.id);
-  const va = ia === -1 ? 999 : ia;
-  const vb = ib === -1 ? 999 : ib;
-  return va - vb;
-});
+// 必须在 updateCatsOrder 之前初始化 tabs 和 activeCat
+// 注意：tabs 元素需要在 DOM 加载完成后获取，但此处代码在 body 底部，通常可行。
+// 为安全起见，updateCatsOrder 内部使用了 document.getElementById('tabs') 并做了判空。
+// 这里仅声明 activeCat 变量，避免下方重复声明报错。
+let activeCat = 'coffee'; 
+
+function updateCatsOrder(){
+  const currentHour = new Date().getHours();
+  const isNight = currentHour >= 18 || currentHour < 6;
+  const targetOrder = isNight ? ORDER_NIGHT : ORDER_DAY;
+  
+  // 检查当前排序是否已经匹配目标排序，避免不必要的 DOM 操作
+  const currentOrderIds = CATS.map(c => c.id).join(',');
+  const tempCats = [...CATS].sort((a,b) => {
+    const ia = targetOrder.indexOf(a.id);
+    const ib = targetOrder.indexOf(b.id);
+    const va = ia === -1 ? 999 : ia;
+    const vb = ib === -1 ? 999 : ib;
+    return va - vb;
+  });
+  const newOrderIds = tempCats.map(c => c.id).join(',');
+  
+  if(currentOrderIds === newOrderIds) return;
+
+  // 更新实际数组顺序
+  CATS.sort((a,b) => {
+    const ia = targetOrder.indexOf(a.id);
+    const ib = targetOrder.indexOf(b.id);
+    const va = ia === -1 ? 999 : ia;
+    const vb = ib === -1 ? 999 : ib;
+    return va - vb;
+  });
+
+  // 重绘 Tabs
+  const tabs = document.getElementById('tabs');
+  if(tabs){
+    tabs.innerHTML = '';
+    CATS.forEach(cat=>{
+      const b = el('button',{class:'tab', 'aria-selected': cat.id===activeCat?'true':'false', onclick:()=>{
+        activeCat = cat.id;
+        [...tabs.children].forEach(x=>x.setAttribute('aria-selected','false'));
+        b.setAttribute('aria-selected','true');
+        drawCarousel(true);
+      }}, cat.name);
+      tabs.appendChild(b);
+    });
+  }
+}
+updateCatsOrder();
+// 每分钟检查一次是否需要切换排序
+setInterval(updateCatsOrder, 60000);
 
 const MENU=[
   // 咖啡（单规格：杯）
@@ -323,17 +364,10 @@ function el(tag, attrs={}, ...children){
 }
 
 // Tabs + Carousel
-const tabs = document.getElementById('tabs');
-let activeCat = CATS[0].id;
-CATS.forEach(cat=>{
-  const b = el('button',{class:'tab', 'aria-selected': cat.id===activeCat?'true':'false', onclick:()=>{
-    activeCat = cat.id;
-    [...tabs.children].forEach(x=>x.setAttribute('aria-selected','false'));
-    b.setAttribute('aria-selected','true');
-    drawCarousel(true);
-  }}, cat.name);
-  tabs.appendChild(b);
-});
+// const tabs = document.getElementById('tabs'); // Moved to top
+// let activeCat = CATS[0].id; // Moved to top
+// Initial render handled by updateCatsOrder above
+
 
 const track = document.getElementById('track');
 const prevBtn=document.getElementById('prev'); const nextBtn=document.getElementById('next');
